@@ -32,6 +32,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,11 +50,15 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     setContent {
-      ButtonsTheme {
+      val darkmode = remember { mutableStateOf(false) }
+      ButtonsTheme(
+        dynamicColor = false,
+        darkTheme = darkmode.value
+      ) {
         Scaffold(modifier = Modifier.fillMaxSize()){ paddingValues -> {
           Modifier.padding(paddingValues)
         }
-          Content()
+          Content(darkmode )
         }
       }
     }
@@ -61,7 +66,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Content(){
+fun Content(darkmode: MutableState<Boolean>){
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier
@@ -81,7 +86,7 @@ fun Content(){
     Space()
     SwitchBtn()
     Space()
-    DarkMode()
+    DarkMode(darkmode)
     Space()
     FloatingBtn()
   }
@@ -166,9 +171,11 @@ fun SwitchBtn() {
 }
 
 @Composable
-fun DarkMode(){
+fun DarkMode(darkmode: MutableState<Boolean>){
   Button(
-    onClick = { /*TODO*/ }
+    onClick = {
+      darkmode.value = !darkmode.value
+    }
   ) {
     Icon(
       imageVector = Icons.Default.Star,
@@ -193,6 +200,7 @@ fun FloatingBtn(){
     )
   }
 }
+
 
 @Composable
 fun Space() {
